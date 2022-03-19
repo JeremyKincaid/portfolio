@@ -8,9 +8,13 @@ import {
     Mesh
 }
     from 'three';
+import TetrisBlock from './blockGroup';
 
 let Threme = () => {
-    const scene = new Scene;
+    let tetrisArr = [];
+    const isRunning = true;
+
+    const scene = new Scene();
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
     const renderer = new WebGLRenderer();
@@ -19,30 +23,38 @@ let Threme = () => {
     renderer.shadowMap.type = BasicShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    const boxGeo = new BoxGeometry(15, 15, 15, 1, 1, 1);
+    const boxGeo = new BoxGeometry(4, 4, 4, 1, 1, 1);
 
-    const material = new MeshStandardMaterial();
+    let randomPosition = () => {
+        return Math.floor(Math.random() * 100);
+    }
 
     let randomInt = () => {
-        return Math.floor(Math.random() * 4);
+        return Math.floor(Math.random() * 2);
     }
 
     let rgbValueGenerator = () => {
         return Math.floor(Math.random() * 256);
     }
 
-    let tetrisGenerator = (rand) => {
-        let color = `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})`;
-        let box0 = new Mesh(boxGeo, new MeshStandardMaterial({ color: color}));
-        for(let i = 0; i < 4; i++) {
-            let pos = randomInt();
-            
-        }
+    let tetrisGenerator = () => {
+        let box0 = new Mesh(boxGeo, new MeshStandardMaterial({ color: `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})`}));
+        let box1 = new Mesh(boxGeo, new MeshStandardMaterial({ color: `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})`}));
+        let box2 = new Mesh(boxGeo, new MeshStandardMaterial({ color: `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})`}));
+        let box3 = new Mesh(boxGeo, new MeshStandardMaterial({ color: `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})`}));
+        let tetris = new TetrisBlock(box0, box1, box2, box3);
+        tetris.group.position.set(-100, randomPosition(), 25);
+        tetrisArr.push(tetris);
+        scene.add(tetris);
+    }
+
+    while(isRunning) {
+        setTimeout(tetrisGenerator(), 1000);
     }
 
     function animate() {
         requestAnimationFrame(animate);
-
+        tetrisArr.forEach((t) => t.position.x += 0.05);
         renderer.render(scene, camera);
     }
     animate();
