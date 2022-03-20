@@ -1,3 +1,4 @@
+import { React } from "react";
 import { PointLight } from 'three';
 import {
     Scene,
@@ -44,7 +45,7 @@ class TetrisBlock {
 }
 
 
-function threme() {
+function Tetris() {
     let tetrisArr = [];
     //let isRunning = true;
 
@@ -113,4 +114,14 @@ function threme() {
         renderer.render(scene, camera);
     }
     animate();
+
+
+
+    return (
+        <div>
+
+        </div>
+    )
 }
+
+export default Tetris;

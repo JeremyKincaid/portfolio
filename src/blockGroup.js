@@ -11,7 +11,7 @@ class TetrisBlock {
         this.group.add(box0);
         this.group.add(box1);
         this.group.add(box2);
-        this.grouop.add(box3);
+        this.group.add(box3);
     }
 
     positionBoxes = () => {
