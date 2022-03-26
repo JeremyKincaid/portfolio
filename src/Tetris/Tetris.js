@@ -1,10 +1,9 @@
 import { React } from "react";
-import { PointLight } from 'three';
+import { Color, PointLight } from 'three';
 import {
     Scene,
     WebGLRenderer,
     PerspectiveCamera,
-    BasicShadowMap,
     BoxGeometry,
     MeshToonMaterial,
     Mesh,
@@ -12,7 +11,6 @@ import {
     Group
 }
     from 'three';
-// import TetrisBlock from './blockGroup';
 
 class TetrisBlock {
     box0 = new Mesh();
@@ -29,8 +27,8 @@ class TetrisBlock {
     }
 
     positionBoxes = () => {
-        let boxArr = [this.box0, this.box1, this.box2, this.box3]
-        this.box0.position.set(5, 5, 5);
+        let boxArr = [this.box0, this.box1, this.box2, this.box3];
+        this.box0.position.set(-50, Math.floor(Math.random() * 10) * 2, Math.floor(Math.random() * 10));
         for (let i = 1; i < boxArr.length; i++) {
             if (Math.floor(Math.random() * 2) === 0) {
                 boxArr[i].position.set(boxArr[i - 1].position.x + 2, boxArr[i - 1].position.y, boxArr[i - 1].position.z)
@@ -47,13 +45,12 @@ class TetrisBlock {
 
 function Tetris() {
     let tetrisArr = [];
-    //let isRunning = true;
 
     const scene = new Scene();
+    scene.background = new Color(0x0fffff);
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 20;
-    camera.position.y = 15;
-    camera.rotation.x = -0.523599;
+    camera.position.y = 10;
     const light = new AmbientLight(0x404040);
     scene.add(light);
     const pLight = new PointLight(0x404040, 1, 0, 2);
@@ -62,15 +59,9 @@ function Tetris() {
     scene.add(pLight);
     const renderer = new WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = BasicShadowMap;
     document.body.appendChild(renderer.domElement);
 
-    const boxGeo = new BoxGeometry(2, 2, 2, 1, 1, 1);
-
-    let randomPosition = () => {
-        return Math.floor(Math.random() * 1);
-    }
+    const boxGeo = new BoxGeometry(2, 2, 1, 1, 1, 1);
 
     let rgbValueGenerator = () => {
         return Math.floor(Math.random() * 256);
@@ -83,34 +74,27 @@ function Tetris() {
         let box3 = new Mesh(boxGeo, new MeshToonMaterial({ color: `rgb(${rgbValueGenerator()}, ${rgbValueGenerator()}, ${rgbValueGenerator()})` }));
         let tetris = new TetrisBlock(box0, box1, box2, box3);
         tetris.positionBoxes();
-        //tetris.group.position.set(0, randomPosition(), 0);
 
         tetrisArr.push(tetris);
-        tetrisArr.forEach((t) => {console.log(t.group.position);
-            t.group.children.forEach((b) => console.log(b.position))})
 
         scene.add(tetris.group);
     }
 
-    tetrisGenerator();
+    setInterval(() => {if(document.hasFocus())tetrisGenerator()}, 1000);
 
-    // while (isRunning) {
-    //     let test = 0;
-    //     setTimeout(tetrisGenerator(), 1000);
-    //     tetrisArr.forEach(t => {
-    //         if (t.group.position.x >= 100) {
-    //             scene.remove(t);
-    //         }
-    //     })
-    //     test += 1;
-    //     console.log(test);
-    //     if(test > 8) isRunning = false;
-    // }
+    let removeTetris = (t) => {
+        t.group.clear();
+    }
 
     function animate() {
         requestAnimationFrame(animate);
-        // tetrisArr.forEach((t) => {t.group.position.x += 1;
-        // console.log(t.group.position)});
+        tetrisArr.forEach((t) => {
+            
+            if(document.hasFocus()) t.group.position.x += 0.1;
+            if (t.group.position.x >= 101) {
+                removeTetris(t);
+            }
+        });
         renderer.render(scene, camera);
     }
     animate();
@@ -118,9 +102,9 @@ function Tetris() {
 
 
     return (
-        <div>
+        <>
 
-        </div>
+        </>
     )
 }
 
