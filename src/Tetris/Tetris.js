@@ -26,20 +26,45 @@ class TetrisBlock {
         this.box3 = box3;
     }
 
+    genericBlockMaker(boxes) {
+        for (let i = 1; i < boxes.length; i++) {
+            if (Math.floor(Math.random() * 2) === 0) {
+                boxes[i].position.set(boxes[i - 1].position.x + 2, boxes[i - 1].position.y, boxes[i - 1].position.z);
+            } else {
+                boxes[i].position.set(boxes[i - 1].position.x, boxes[i - 1].position.y + 2, boxes[i - 1].position.z);
+            }
+        }
+    }
+
+    tBlockMaker(boxes) {
+        for (let i = 1; i < boxes.length - 1; i++) {
+            boxes[i].position.set(boxes[i - 1].position.x + 2, boxes[i - 1].position.y, boxes[i - 1].position.z);
+        }
+        Math.floor(Math.random() * 2) < 1 ? boxes[3].position.set(boxes[1].position.x, boxes[1].position.y + 2, boxes[1].position.z) :
+            boxes[3].position.set(boxes[1].position.x, boxes[1].position.y - 2, boxes[1].position.z);
+    }
+
+    squareBlockMaker(boxes) {
+        for (let i = 1; i < boxes.length; i++) {
+            i === 2 ? boxes[i].position.set(boxes[0].position.x, boxes[0].position.y + 2, boxes[0].position.z) :
+                i === 3 ? boxes[i].position.set(boxes[1].position.x, boxes[1].position.y + 2, boxes[1].position.z) :
+                    boxes[i].position.set(boxes[0].position.x + 2, boxes[0].position.y, boxes[0].position.z);
+        }
+    }
+
     positionBoxes = () => {
         let boxArr = [this.box0, this.box1, this.box2, this.box3];
         this.box0.position.set(-50, Math.floor(Math.random() * 10) * 2, Math.floor(Math.random() * 10));
-        for (let i = 1; i < boxArr.length; i++) {
-            if (Math.floor(Math.random() * 2) === 0) {
-                boxArr[i].position.set(boxArr[i - 1].position.x + 2, boxArr[i - 1].position.y, boxArr[i - 1].position.z)
-            } else {
-                boxArr[i].position.set(boxArr[i - 1].position.x, boxArr[i - 1].position.y + 2, boxArr[i - 1].position.z)
-            }
-
+        let roll = Math.floor(Math.random() * 10);
+        if (roll < 7) {
+            this.genericBlockMaker(boxArr);
+        } else if (roll > 6 && roll < 9) {
+            this.tBlockMaker(boxArr);
+        } else {
+            this.squareBlockMaker(boxArr);
         }
         boxArr.forEach((b) => this.group.add(b));
     }
-
 }
 
 
@@ -80,7 +105,7 @@ function Tetris() {
         scene.add(tetris.group);
     }
 
-    setInterval(() => {if(document.hasFocus())tetrisGenerator()}, 1000);
+    setInterval(() => { if (document.hasFocus()) tetrisGenerator() }, 1000);
 
     let removeTetris = (t) => {
         t.group.clear();
@@ -89,8 +114,8 @@ function Tetris() {
     function animate() {
         requestAnimationFrame(animate);
         tetrisArr.forEach((t) => {
-            
-            if(document.hasFocus()) t.group.position.x += 0.1;
+
+            if (document.hasFocus()) t.group.position.x += 0.1;
             if (t.group.position.x >= 101) {
                 removeTetris(t);
             }
