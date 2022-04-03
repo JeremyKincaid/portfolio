@@ -3,7 +3,17 @@
   color: whitesmoke;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 canvas {
   position: fixed;
   z-index: -3;
+}
+
+::-webkit-scrollbar
+{
+  width: 0px;
 }
