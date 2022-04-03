@@ -1,6 +1,6 @@
 import { React } from "react";
-import { Color, PointLight } from 'three';
 import {
+    Color,
     Scene,
     WebGLRenderer,
     PerspectiveCamera,
@@ -72,16 +72,19 @@ function Tetris() {
     let tetrisArr = [];
 
     const scene = new Scene();
-    scene.background = new Color(0x0fffff);
+    scene.background = new Color(0x7a9cff);
     const camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.z = 20;
     camera.position.y = 10;
-    const light = new AmbientLight(0x404040);
+    const light = new AmbientLight(0x404040, 4);
     scene.add(light);
-    const pLight = new PointLight(0x404040, 1, 0, 2);
-    pLight.position.set(0, 15, 0);
-    pLight.castShadow = true;
-    scene.add(pLight);
+    // const pLight = new PointLight(0x404040, 5, 0, 2);
+    // pLight.position.set(0, 10, 10);
+    // pLight.castShadow = false;
+    // scene.add(pLight);
+    // const sphereSize = 1;
+    // const pointLightHelper = new PointLightHelper(pLight, sphereSize);
+    // scene.add(pointLightHelper);
     const renderer = new WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
