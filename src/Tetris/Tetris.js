@@ -11,6 +11,7 @@ import {
     Group
 }
     from 'three';
+import { VRButton } from 'three/examples/jsm/webxr/VRButton.js';
 
 class TetrisBlock {
     box0 = new Mesh();
@@ -78,19 +79,18 @@ function Tetris() {
     camera.position.y = 10;
     const light = new AmbientLight(0x404040, 4);
     scene.add(light);
-    // const pLight = new PointLight(0x404040, 5, 0, 2);
-    // pLight.position.set(0, 10, 10);
-    // pLight.castShadow = false;
-    // scene.add(pLight);
-    // const sphereSize = 1;
-    // const pointLightHelper = new PointLightHelper(pLight, sphereSize);
-    // scene.add(pointLightHelper);
     const renderer = new WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
-
+    document.body.appendChild(VRButton.createButton(renderer));
+    renderer.xr.enabled = true;
+    // let xr = renderer.xr;
+    // let xrSessionEvent = new xr.XRSession();
+    let vrButton = document.getElementById('VRButton');
+    vrButton.addEventListener(onclick, e => {
+        camera.position(0, 40, 40);
+    })
     const boxGeo = new BoxGeometry(2, 2, 1, 1, 1, 1);
-
     let rgbValueGenerator = () => {
         return Math.floor(Math.random() * 256);
     }
@@ -107,15 +107,32 @@ function Tetris() {
 
         scene.add(tetris.group);
     }
-
-    setInterval(() => { if (document.hasFocus()) tetrisGenerator() }, 1000);
+    
+    // setInterval(() => { if (document.hasFocus()) tetrisGenerator() }, 1000);
+    setInterval(() => tetrisGenerator(), 1000);
 
     let removeTetris = (t) => {
         t.group.clear();
-    }
+    };
+
+    renderer.setAnimationLoop(function() {
+        renderer.render(scene, camera);
+    });
 
     function animate() {
         requestAnimationFrame(animate);
+        renderer.setAnimationLoop(function() {
+            renderer.render(scene, camera);
+            tetrisArr.forEach((t) => {
+
+                t.group.position.x += 0.1;
+                if (t.group.position.x >= 101) {
+                    removeTetris(t);
+                }
+            });
+    
+        });
+    
         tetrisArr.forEach((t) => {
 
             if (document.hasFocus()) t.group.position.x += 0.1;
